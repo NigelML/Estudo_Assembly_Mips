@@ -4,8 +4,8 @@
 prompt_str1: .asciiz "Digite a primeira string: "
 prompt_str2: .asciiz "Digite a segunda string: "
 result_equal: .asciiz "As strings são iguais."
-result_greater: .asciiz "A primeira string é maior."
-result_smaller: .asciiz "A primeira string é menor."
+result_greater: .asciiz "A primeira string é MAIOR."
+result_smaller: .asciiz "A primeira string é MENOR."
 
 str1: .space 100   # Espaço para a primeira string
 str2: .space 100   # Espaço para a segunda string
