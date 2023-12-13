@@ -22,16 +22,16 @@ main:
 	li $s0, BASE_MMIO # Obtém o endereço base da área MMIO
 
 	loop_esperaTecla:
-		lw $t0, CONTROLE_RECEPTOR # Obtém o registrador de controle do receptor
-		andi $t0, $t0, 1 # Isola o bit de pronto
-		beq $t0, $zero, loop_esperaTecla # A tecla está disponível? Se não, loop
+		lw $t1, CONTROLE_RECEPTOR # Obtém o registrador de controle do receptor
+		andi $t1, $t1, 1 # Isola o bit de pronto
+		beq $t1, $zero, loop_esperaTecla # A tecla está disponível? Se não, loop
 
 		lbu $a0, DADOS_RECEPTOR # Obtém o valor da tecla
 
 	loop_esperaExibicao:
-		lw $t1, CONTROLE_TRANSMISSOR # Obtém o registrador de controle do transmissor
-		andi $t1, $t1, 1 # Isola o bit de pronto
-		beq $t1, $zero, loop_esperaExibicao # A exibição está pronta? Se não, loop
+		lw $t2, CONTROLE_TRANSMISSOR # Obtém o registrador de controle do transmissor
+		andi $t2, $t2, 1 # Isola o bit de pronto
+		beq $t2, $zero, loop_esperaExibicao # A exibição está pronta? Se não, loop
 
 		sb $a0, DADOS_TRANSMISSOR # Envia a tecla para a exibição
 
