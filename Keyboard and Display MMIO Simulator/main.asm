@@ -1,4 +1,5 @@
 .data
+	#ENDEREÇO BASE DE ACESSO PARA O MMIO
 	.eqv BASE_MMIO 0xffff0000
 	# Registrador de Controle do Transmissor (Bit de Pronto)
 	.eqv RCT 0x0008
