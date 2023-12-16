@@ -41,41 +41,31 @@
         addi $a0, $a0, 1
 
         j command_loop
-
-    command_not_found:
-        # Comando não encontrado, imprime mensagem e sai
-        li $v0, 4
-        la $a0, mensagem_invalido
-        syscall
-        j end_program
-        
+  
 get_data_buffer:
 	la $a0, buffer
 	la $a1, data_buffer
-		
+			
 	find_data_loop: #encontra o inicio dos dados do comando
 	lb $t0, 0($a0)
-	beq $t0, '-', data_loop	      
+	beq $t0, '-', start_data_loop	      
         addi $a0, $a0, 1
         
-	j find_data_loop
+	j find_data_loop	
 	
-        data_loop: #salva os dados
-        lb $t0, 0($a0)
-	beqz $t0, escolher_funcao  # Fim da string  
+        start_data_loop: #salva os dados        	
+        	data_loop:
+        		lb $t0, 0($a0)
+			beqz $t0, escolher_funcao  # Fim da string  
 	
-	sb $t0, 0($a1)
-        addi $a1, $a1, 1
-        sb $zero, 0($a1)   
-        addi $a0, $a0, 1 	
-        j data_loop
+			sb $t0, 0($a1)
+        		addi $a1, $a1, 1
+        		sb $zero, 0($a1)   
+        		addi $a0, $a0, 1 	
+        		j data_loop
                       
-	#Opões escolhidas pelos comandos
+#Opões escolhidas pelos comandos--------------------------
 escolher_funcao:
-	li $v0, 4
-	la $a0, data_buffer
-	syscall # para testes!!!
-	
 	la $a1 , cmd_buffer #vai ser passado como parametro para strcmp
 	
 	la $a0, cmd1 #segundo parametro para strcmp
@@ -92,30 +82,40 @@ escolher_funcao:
 	jal strcmp    
     	beqz $v0, debito_extrato
 
-    # Comando não reconhecido
-    	li $v0, 4
-    	la $a0, mensagem_invalido
-    	syscall
-    j end_program
+    j command_not_found
 	
 #opções-------------------------
 	conta_cadastrar:
 		li $v0, 4
         	la $a0, msg_cadastro
-        	syscall        
+        	syscall
+        	li $v0, 4
+        	la $a0, data_buffer #vai imprimir tudo colado(não tem \n), porém cmd e dados estão em locais diferentes
 		j end_program
 		
 	conta_format:
 		li $v0, 4
         	la $a0, msg_formatar
         	syscall 
+        	li $v0, 4
+        	la $a0, data_buffer 
 		j end_program
 		
 	debito_extrato:
 		li $v0, 4
         	la $a0, msg_debito
-        	syscall 		
-		
+        	syscall 
+        	li $v0, 4
+        	la $a0, data_buffer
+        	j end_program
+        			
+command_not_found:
+        # Comando não encontrado, imprime mensagem e sai
+        li $v0, 4
+        la $a0, mensagem_invalido
+        syscall
+        j end_program
+        		
 end_program:
     # Finaliza o programa
     li $v0, 10
