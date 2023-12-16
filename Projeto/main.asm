@@ -1,9 +1,9 @@
 .data
 	buffer: .space 128    # buffer para armazenar a string de entrada
 	mensagem_invalido: .asciiz "Comando inválido"
-	msg_cadastro: .asciiz "Cadastro"
-	msg_formatar: .asciiz "Formatar"
-	msg_debito: .asciiz "Debito"
+	msg_cadastro: .asciiz "Cadastro : "
+	msg_formatar: .asciiz "Formatar : "
+	msg_debito: .asciiz "Debito : "
 	
 	data_buffer: .space 128
 	cmd_buffer: .space 16	
@@ -47,22 +47,23 @@ get_data_buffer:
 	la $a1, data_buffer
 			
 	find_data_loop: #encontra o inicio dos dados do comando
-	lb $t0, 0($a0)
-	beq $t0, '-', start_data_loop	      
-        addi $a0, $a0, 1
+		lb $t0, 0($a0)
+		beq $t0, '-', data_loop	      
+        	addi $a0, $a0, 1
         
 	j find_data_loop	
 	
-        start_data_loop: #salva os dados        	
-        	data_loop:
-        		lb $t0, 0($a0)
-			beqz $t0, escolher_funcao  # Fim da string  
+        #salva os dados
+        #start_data_loop:       	
+        data_loop:
+        	lb $t0, 0($a0)
+		beqz $t0, escolher_funcao  # Fim da string  
 	
-			sb $t0, 0($a1)
-        		addi $a1, $a1, 1
-        		sb $zero, 0($a1)   
-        		addi $a0, $a0, 1 	
-        		j data_loop
+		sb $t0, 0($a1)
+        	addi $a1, $a1, 1
+        	sb $zero, 0($a1)   
+        	addi $a0, $a0, 1 	
+        j data_loop
                       
 #Opões escolhidas pelos comandos--------------------------
 escolher_funcao:
@@ -90,7 +91,8 @@ escolher_funcao:
         	la $a0, msg_cadastro
         	syscall
         	li $v0, 4
-        	la $a0, data_buffer #vai imprimir tudo colado(não tem \n), porém cmd e dados estão em locais diferentes
+        	la $a0, data_buffer #vai imprimir tudo colado(não tem \n)
+		syscall 
 		j end_program
 		
 	conta_format:
@@ -99,6 +101,7 @@ escolher_funcao:
         	syscall 
         	li $v0, 4
         	la $a0, data_buffer 
+        	syscall 
 		j end_program
 		
 	debito_extrato:
@@ -107,6 +110,7 @@ escolher_funcao:
         	syscall 
         	li $v0, 4
         	la $a0, data_buffer
+        	syscall 
         	j end_program
         			
 command_not_found:
