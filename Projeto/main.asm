@@ -128,7 +128,7 @@ end_program:
     
 .include "string/strcmp.asm"
 .include "comand_options/GetComand.asm"
-.include "SelectOptions.asm"
+.include "functions/SelectOptions.asm"
 
 
 imprime_teste:		
