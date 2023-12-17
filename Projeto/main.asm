@@ -115,7 +115,8 @@
         sair: 
         	j imprime_teste
         	syscall 
-       info: 
+        	
+       info:  #feito
        		jal Info
         	syscall 
           
