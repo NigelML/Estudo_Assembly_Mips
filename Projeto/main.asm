@@ -1,11 +1,18 @@
 .data
-	buffer: .space 128    # buffer para armazenar a string de entrada
+	buffer: .space 32    # buffer para armazenar a string de entrada	
 	mensagem_invalido: .asciiz "Comando inválido"
 	
 	msg_sonho: .asciiz "Funciona!!"
 	
-	cmd_buffer: .space 32
+	cmd_buffer: .space 32	
+	name_buffer: .space 34
+	cpf_buffer: .space 13
+	id_buffer: .space 8	
 	
+	data_buffer: .space 128
+	name_data: .space 34
+	cpf_data: .space 13
+	id_data: .space 8
 		
 	cmd1: .asciiz "conta_cadastrar"
 	cmd2: .asciiz "conta_format"
@@ -25,7 +32,12 @@
 	cmd16: .asciiz "sair"
 	cmd17: .asciiz "info"
 	
+	limite_credito_inicial: .asciiz "(1500)"
+	saldo_inicial: .asciiz "(0000)"
+	fatura_inicial: .asciiz "(0000)"
+	
 	newline: .asciiz  "\n"
+	ponto_virgula: .asciiz ";"
 	
 	#OBS: muitos dos dados alocados aqui vão ser usados em outras funções, caso execulte o arquivo contendo a função independentemente provavelmente ela não vai funcionar, sempre execulte o main
 	#Atenção Se o mars.jar não estiver na mesma pasta que o arquivo txt é preciso inserir o caminho completo até chegar nele ex: C:/Users/_SEU-USUARIO_/Desktop/assembly-mars/texto.txt
@@ -35,7 +47,7 @@
 .text
 
 .main:	
-	jal GetClientData
+	#jal GetClientData
 	main_loop:	
 		#jal PrintFormattedData		
 	
@@ -143,7 +155,7 @@ formatar_salvar:
 update_loop:
 	# Limpar o buffers
 	la $a0, buffer
-	li $a1, 128	
+	li $a1, 32	
 	jal ClearBuffer
 
 j main_loop
@@ -155,6 +167,7 @@ end_program:
     syscall
     
 .include "string/strcmp.asm"
+.include "string/strcat.asm"
 .include "functions/GetComand.asm"
 .include "functions/SelectOptions.asm"
 .include "functions/Cadastro.asm"
