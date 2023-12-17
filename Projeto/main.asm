@@ -31,25 +31,31 @@
 	
 	#OBS: muitos dos dados alocados aqui vão ser usados em outras funções, caso execulte o arquivo contendo a função independentemente provavelmente ela não vai funcionar, sempre execulte o main
 	#Atenção Se o mars.jar não estiver na mesma pasta que o arquivo txt é preciso inserir o caminho completo até chegar nele ex: C:/Users/_SEU-USUARIO_/Desktop/assembly-mars/texto.txt
-	localArquivo: .asciiz "ClientData.txt"	
+	get_localArquivo: .asciiz "data/ClientData.txt"	
+	set_localArquivo: .asciiz "data/ClientData_teste.txt"	
 	clientData: .space 3200 #sempre coloque no final de .data, isso evita problema de invasão/estouro de memória
 .text
 
 .main:	
-	# 1. Leitura da String de Entrada
-	li $v0, 8            # código da syscall para ler string
-	la $a0, buffer       # endereço do buffer
-	li $a1, 128          # comprimento máximo da string
-	syscall
+	main_loop:
+		jal GetClientData	
+		#jal PrintFormattedData		
 	
-	la $a0, buffer ## provavelmente NESTE(NESTE!!!) caso nem precise, pois $a0 ja aponta para buffer, mas assim fica mais fácil de entender
-	la $a1, cmd_buffer
-	jal GetComand
+		j end_program
+		# 1. Leitura da String de Entrada
+		li $v0, 8            # código da syscall para ler string
+		la $a0, buffer       # endereço do buffer
+		li $a1, 128          # comprimento máximo da string
+		syscall
 	
-	la $a0, cmd_buffer
-	jal SelectOptions
+		la $a0, buffer ## provavelmente NESTE(NESTE!!!) caso nem precise, pois $a0 ja aponta para buffer, mas assim fica mais fácil de entender
+		la $a1, cmd_buffer
+		jal GetComand
+	
+		la $a0, cmd_buffer
+		jal SelectOptions
 
-	j command_not_found#só entra aqui se nenhuma opção for selecionada
+		j command_not_found#só entra aqui se nenhuma opção for selecionada
 	
 #opções
 	conta_cadastrar:
@@ -100,19 +106,21 @@
         	j imprime_teste
         	j end_program
         
-        salvar:
-        	j imprime_teste
+        salvar: 
+        	jal CountCharacters
+        	beqz  $v0 formatar_salvar # se clientData = 0 significa que foi usado o comando formatar
+        	jal SetClientData
         	j end_program
         
-        recarregar:
-        	j imprime_teste
+        recarregar: #"feito" ainda precisa de mais testes
+        	jal GetClientData
         	j end_program
         
-        formatar:
-        	j imprime_teste
+        formatar:    #feito    	
+        	jal ClearClientData #apaga os dados do buffer clienteData, mas não muda o arquivo txt  	
         	j end_program
         
-        sair: 
+        sair: #feito
         	j imprime_teste
         	syscall 
         	
@@ -129,7 +137,24 @@ command_not_found:
         la $a0, newline
 	syscall	
         j end_program
-        		      		
+
+formatar_salvar:
+	jal Formatar
+	j end_program  
+
+update_loop:
+	# Limpar o buffer
+	la $t0, buffer       # endereço do buffer
+	li $t1, 128          # comprimento máximo do buffer
+
+	clear_buffer_loop:
+    	sb $zero, 0($t0)   # escreve zero no byte atual do buffer
+    	addi $t0, $t0, 1   # move para o próximo byte
+    	addi $t1, $t1, -1  # decrementa o contador
+    	bnez $t1, clear_buffer_loop  # repete até que todos os bytes sejam zerados
+j main_loop
+
+ 		      		
 end_program:
     # Finaliza o programa
     li $v0, 10
@@ -140,18 +165,9 @@ end_program:
 .include "functions/SelectOptions.asm"
 .include "functions/Cadastro.asm"
 .include "functions/Info.asm"
-
-
-imprime_teste:		
-		li $v0, 4
-
-		la $a0, msg_sonho  
-		syscall	
-		        		
-        	la $a0, newline
-		syscall	
-		
-        	la $a0, cmd_buffer
-        	syscall 
-
-		j end_program
+.include "functions/Formatar.asm"
+.include "io-data/GetClientData.asm"
+.include "io-data/SetClientData.asm"
+.include "tools/PrintFormattedData.asm"
+.include "tools/CountCharacters.asm"
+.include "tools/ClearClientData.asm"

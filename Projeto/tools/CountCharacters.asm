@@ -9,7 +9,7 @@ CountCharacters:
 
     # Inicializa o contador
     li $v0, 0
-
+	la $a0, clientData
 count_loop:
     lb $t1, 0($a0)     # Carrega o byte do buffer
     beqz $t1, count_done  # Se encontrou o caractere nulo, termina o loop

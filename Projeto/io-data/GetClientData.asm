@@ -5,7 +5,7 @@ GetClientData:
 
 	#Abrindo arquivo para modo leitura
 	li $v0,13 #Comando para solicitar abertura
-	la $a0, localArquivo #Armazena endereço do arquivo em $a0
+	la $a0, get_localArquivo #Armazena endereço do arquivo em $a0
 	li $a1, 0 # 0 significa que o arquivo vai abrir para leitura, 1 para escrita
 	syscall #o descritor do arquivo vai para $vo
 	
