@@ -5,7 +5,7 @@ SelectOptions:
 	subi $sp, $sp, -4# necessário , pois quando uma função chama outra o registrador $ra é sobrescrito e perde o retorno original
 	sw $ra, 0($sp) #-4 é apenas uma convenção, eu li em um fórum
 	
-	la $a1 , cmd_buffer #vai ser passado como parametro para strcmp
+	move $a1 , $a0 #vai ser passado como parametro para strcmp
 	
 	la $a0, cmd1 #segundo parametro para strcmp
 	jal strcmp    

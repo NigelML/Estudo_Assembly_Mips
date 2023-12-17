@@ -2,12 +2,12 @@
 	buffer: .space 128    # buffer para armazenar a string de entrada
 	mensagem_invalido: .asciiz "Comando inválido"
 	
+	msg_sonho: .asciiz "Funciona!!"
 	msg_cadastro: .asciiz "Cadastro : \n"
 	msg_formatar: .asciiz "Formatar : \n"
 	msg_debito: .asciiz "Debito : \,"
 	
-	cmd_buffer: .space 32	
-	data_buffer: .space 96
+	cmd_buffer: .space 32
 		
 	cmd1: .asciiz "conta_cadastrar"
 	cmd2: .asciiz "conta_format"
@@ -25,6 +25,7 @@
 	cmd14: .asciiz "recarregar"
 	cmd15: .asciiz "formatar"
 	cmd16: .asciiz "sair"
+	cmd17: .asciiz "info"
 	
 	newline: .asciiz  "\n"
 	
@@ -35,11 +36,22 @@
 .text
 
 .main:	
+	# 1. Leitura da String de Entrada
+	li $v0, 8            # código da syscall para ler string
+	la $a0, buffer       # endereço do buffer
+	li $a1, 128          # comprimento máximo da string
+	syscall
+	
+	la $a0, buffer
+	la $a1, cmd_buffer
 	jal GetComand
+	
+	la $a0, cmd_buffer
 	jal SelectOptions
-	# para teste:   conta_cadastrar-16512329031-765432-Jose Silva	
+
 	j command_not_found#só entra aqui se nenhuma opção for selecionada
-#opções-------------------------
+	
+#opções
 	conta_cadastrar:
 		j imprime_teste
 		j end_program
@@ -89,26 +101,19 @@
         	j end_program
         
         salvar:
-        	li $v0, 4
-        	la $a0, cmd_buffer
-        	syscall
+        	j imprime_teste
         	j end_program
         
         recarregar:
-        	li $v0, 4
-        	la $a0, cmd_buffer
-        	syscall
+        	j imprime_teste
         	j end_program
         
         formatar:
-        	li $v0, 4
-        	la $a0, cmd_buffer
-        	syscall
+        	j imprime_teste
         	j end_program
         
         sair: 
-        	li $v0, 4
-        	la $a0, cmd_buffer
+        	j imprime_teste
         	syscall 
           
         			
@@ -127,19 +132,20 @@ end_program:
     syscall
     
 .include "string/strcmp.asm"
-.include "comand_options/GetComand.asm"
+.include "functions/GetComand.asm"
 .include "functions/SelectOptions.asm"
 
 
 imprime_teste:		
 		li $v0, 4
+
+		la $a0, msg_sonho  
+		syscall	
+		        		
+        	la $a0, newline
+		syscall	
 		
         	la $a0, cmd_buffer
         	syscall 
-        	
-        	la $a0, newline
-		syscall	  
-        	      	
-        	la $a0, data_buffer
-        	syscall 
-        	j end_program
+
+		j end_program
