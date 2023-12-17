@@ -1,5 +1,5 @@
 .data
-	bem_vindo_cadastro: .asciiz "Bem vindo a tela de Cadastro"	
+	bem_vindo_cadastro: .asciiz "Bem vindo a tela de Cadastro\n"	
 .text
 .globl Cadastro
 Cadastro:

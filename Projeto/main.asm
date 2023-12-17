@@ -3,9 +3,6 @@
 	mensagem_invalido: .asciiz "Comando inválido"
 	
 	msg_sonho: .asciiz "Funciona!!"
-	msg_cadastro: .asciiz "Cadastro : \n"
-	msg_formatar: .asciiz "Formatar : \n"
-	msg_debito: .asciiz "Debito : \,"
 	
 	cmd_buffer: .space 32
 		
@@ -38,10 +35,10 @@
 
 .main:	
 	main_loop:
-		jal GetClientData	
+		#jal GetClientData	
 		#jal PrintFormattedData		
 	
-		j end_program
+		#j end_program
 		# 1. Leitura da String de Entrada
 		li $v0, 8            # código da syscall para ler string
 		la $a0, buffer       # endereço do buffer
@@ -60,73 +57,73 @@
 #opções
 	conta_cadastrar:
 		jal Cadastro
-		j end_program
+		j update_loop
 				
 	conta_format:
 		j imprime_teste
-		j end_program
+		j update_loop
 		
 	debito_extrato:
 		j imprime_teste
-		j end_program
+		j update_loop
 		
         credito_extrato:
         	j imprime_teste
-        	j end_program
+        	j update_loop
         
         transferir_debito:
         	j imprime_teste
-        	j end_program
+        	j update_loop
         
         transferir_credito:
        		j imprime_teste
-        	j end_program
+        	j update_loop
         
         pagar_fatura:
         	j imprime_teste
-        	j end_program
+        	j update_loop
         
         sacar:
         	j imprime_teste
-        	j end_program
+        	j update_loop
         
         depositar:
         	j imprime_teste
-        	j end_program
+        	j update_loop
         
         alterar_limite:
         	j imprime_teste
-        	j end_program
+        	j update_loop
         
         conta_fechar:
         	j imprime_teste
-       		j end_program
+       		j update_loop
         
         data_hora:
         	j imprime_teste
-        	j end_program
+        	j update_loop
         
-        salvar: 
+        salvar: #feito #precisa de alguns testes
         	jal CountCharacters
         	beqz  $v0 formatar_salvar # se clientData = 0 significa que foi usado o comando formatar
         	jal SetClientData
-        	j end_program
+        	j update_loop
         
         recarregar: #"feito" ainda precisa de mais testes
-        	jal GetClientData
-        	j end_program
+        	jal ClearClientData
+        	jal GetClientData        	
+        	j update_loop
         
-        formatar:    #feito    	
+        formatar: #feito    	
         	jal ClearClientData #apaga os dados do buffer clienteData, mas não muda o arquivo txt  	
-        	j end_program
+        	j update_loop
         
         sair: #feito
-        	j imprime_teste
-        	syscall 
+        	j end_program 
         	
        info:  #feito
        		jal Info
-        	syscall 
+       		j update_loop    	
           
         			
 command_not_found:
@@ -136,7 +133,7 @@ command_not_found:
         syscall
         la $a0, newline
 	syscall	
-        j end_program
+        j update_loop
 
 formatar_salvar:
 	jal Formatar
@@ -171,3 +168,18 @@ end_program:
 .include "tools/PrintFormattedData.asm"
 .include "tools/CountCharacters.asm"
 .include "tools/ClearClientData.asm"
+
+
+imprime_teste:	# essa parte é apenas para testes	
+		li $v0, 4
+
+		la $a0, msg_sonho  
+		syscall	
+		        		
+        	la $a0, newline
+		syscall	
+		
+        	la $a0, cmd_buffer
+        	syscall 
+
+		j end_program
