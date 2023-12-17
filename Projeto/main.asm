@@ -42,7 +42,7 @@
 	li $a1, 128          # comprimento máximo da string
 	syscall
 	
-	la $a0, buffer
+	la $a0, buffer ## provavelmente NESTE(NESTE!!!) caso nem precise, pois $a0 ja aponta para buffer, mas assim fica mais fácil de entender
 	la $a1, cmd_buffer
 	jal GetComand
 	
@@ -53,7 +53,7 @@
 	
 #opções
 	conta_cadastrar:
-		j imprime_teste
+		jal Cadastro
 		j end_program
 				
 	conta_format:
@@ -115,6 +115,9 @@
         sair: 
         	j imprime_teste
         	syscall 
+       info: 
+       		jal Info
+        	syscall 
           
         			
 command_not_found:
@@ -134,6 +137,8 @@ end_program:
 .include "string/strcmp.asm"
 .include "functions/GetComand.asm"
 .include "functions/SelectOptions.asm"
+.include "functions/Cadastro.asm"
+.include "functions/Info.asm"
 
 
 imprime_teste:		

@@ -86,6 +86,11 @@ SelectOptions:
 	jal strcmp    
     	beqz $v0, sair
     	
+    	la $a1 , cmd_buffer
+	la $a0, cmd17
+	jal strcmp    
+    	beqz $v0, info
+    	
     	lw $ra, 0($sp)
 	addi $sp, $sp, 4   	
  jr $ra
