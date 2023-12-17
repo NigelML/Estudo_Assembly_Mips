@@ -35,7 +35,7 @@
 
 .main:	
 	main_loop:
-		#jal GetClientData	
+		jal GetClientData	
 		#jal PrintFormattedData		
 	
 		#j end_program
