@@ -15,6 +15,9 @@ sw $ra, 0($sp) #-4 é apenas uma convenção, eu li em um fórum
 	la $a0, sequencia_comandos_cadastro
 	syscall 
 	
+
+
+end_cadastro:
 lw $ra, 0($sp)
 addi $sp, $sp, 4 
-jr $ra
+	jr $ra

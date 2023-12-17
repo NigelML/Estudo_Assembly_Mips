@@ -5,6 +5,7 @@
 	msg_sonho: .asciiz "Funciona!!"
 	
 	cmd_buffer: .space 32
+	
 		
 	cmd1: .asciiz "conta_cadastrar"
 	cmd2: .asciiz "conta_format"
@@ -34,8 +35,8 @@
 .text
 
 .main:	
-	main_loop:
-		jal GetClientData	
+	jal GetClientData
+	main_loop:	
 		#jal PrintFormattedData		
 	
 		#j end_program
@@ -140,15 +141,11 @@ formatar_salvar:
 	j end_program  
 
 update_loop:
-	# Limpar o buffer
-	la $t0, buffer       # endereço do buffer
-	li $t1, 128          # comprimento máximo do buffer
+	# Limpar o buffers
+	la $a0, buffer
+	li $a1, 128	
+	jal ClearBuffer
 
-	clear_buffer_loop:
-    	sb $zero, 0($t0)   # escreve zero no byte atual do buffer
-    	addi $t0, $t0, 1   # move para o próximo byte
-    	addi $t1, $t1, -1  # decrementa o contador
-    	bnez $t1, clear_buffer_loop  # repete até que todos os bytes sejam zerados
 j main_loop
 
  		      		
@@ -168,6 +165,7 @@ end_program:
 .include "tools/PrintFormattedData.asm"
 .include "tools/CountCharacters.asm"
 .include "tools/ClearClientData.asm"
+.include "tools/ClearBuffer.asm"
 
 
 imprime_teste:	# essa parte é apenas para testes	
