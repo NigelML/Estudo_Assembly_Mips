@@ -13,13 +13,15 @@ GetComand:
     li $a2, 0
 
     command_loop:
-        lb $t0, 0($a0)              
-        beqz $t0, command_not_found  # Fim da string
+        lb $t0, 0($a0) 
+        beq $t0, 10, end_get_data 
+        beqz $t0, command_not_found #quebra de linha
         beq $t0, '-', get_data_buffer
         
         sb $t0, 0($a1)
         addi $a1, $a1, 1
         sb $zero, 0($a1)
+        
                   
         addi $a0, $a0, 1
 

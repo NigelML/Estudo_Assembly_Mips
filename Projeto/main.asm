@@ -10,6 +10,7 @@
 	option_3: .space 32	
 	
 	data_buffer: .space 128
+	salve_data_buffer: .space 128
 
 		
 	cmd1: .asciiz "conta_cadastrar"
@@ -51,75 +52,58 @@
 		jal GetComand
 		jal GetOptionData
 		
-		li $v0, 4
-		la $a0, option_1
-		syscall
-		
-		li $v0, 4
-		la $a0, newline
-		syscall
-		
-		li $v0, 4
-		la $a0, option_2
-		syscall
-		
-		li $v0, 4
-		la $a0, newline
-		syscall
-		
-		li $v0, 4
-		la $a0, option_3
-		syscall
-		
-		j end_program
+		jal SelectOptions
+		j command_not_found
 	
 #opções
 	conta_cadastrar:
-		#jal Cadastro
+		li $v0, 4
+		la $a0, msg_sonho
+		syscall
 		j update_loop
 				
 	conta_format:
-		j imprime_teste
+		
 		j update_loop
 		
 	debito_extrato:
-		j imprime_teste
+		
 		j update_loop
 		
         credito_extrato:
-        	j imprime_teste
+        	
         	j update_loop
         
         transferir_debito:
-        	j imprime_teste
+        	
         	j update_loop
         
         transferir_credito:
-       		j imprime_teste
+       		
         	j update_loop
         
         pagar_fatura:
-        	j imprime_teste
+        	
         	j update_loop
         
         sacar:
-        	j imprime_teste
+        	
         	j update_loop
         
         depositar:
-        	j imprime_teste
+        	
         	j update_loop
         
         alterar_limite:
-        	j imprime_teste
+        	
         	j update_loop
         
         conta_fechar:
-        	j imprime_teste
+        	
        		j update_loop
         
         data_hora:
-        	j imprime_teste
+        	
         	j update_loop
         
         salvar: #feito #precisa de alguns testes
@@ -136,13 +120,13 @@
         formatar: #feito    	
         	jal ClearClientData #apaga os dados do buffer clienteData, mas não muda o arquivo txt  	
         	j update_loop
-        
-        sair: #feito
-        	j end_program 
         	
        info:  #feito
        		jal Info
-       		j update_loop    	
+       		j update_loop 
+       		 
+       sair: #feito
+        	j end_program   	
           
         			
 command_not_found:
@@ -156,11 +140,19 @@ command_not_found:
 
 formatar_salvar:
 	jal Formatar
-	j end_program 
+	j update_loop
 j main_loop 
-
-
-
+ 
+update_loop:
+	# Limpar o buffers
+	la $a0, buffer
+	li $a1, 128	
+	jal ClearBuffer
+	
+	la $a0, cmd_buffer
+	li $a1, 32	
+	jal ClearBuffer
+j main_loop
  		      		
 end_program:
     # Finaliza o programa
@@ -183,29 +175,3 @@ end_program:
 .include "tools/CountCharacters.asm"
 .include "tools/ClearClientData.asm"
 .include "tools/ClearBuffer.asm"
-
-update_loop:
-	# Limpar o buffers
-	la $a0, buffer
-	li $a1, 128	
-	jal ClearBuffer
-	
-	la $a0, cmd_buffer
-	li $a1, 32	
-	jal ClearBuffer
-j main_loop 
-	
-	
-imprime_teste:	# essa parte é apenas para testes	
-		li $v0, 4
-
-		la $a0, msg_sonho  
-		syscall	
-		        		
-        	la $a0, newline
-		syscall	
-		
-        	la $a0, cmd_buffer
-        	syscall 
-
-		j end_program
