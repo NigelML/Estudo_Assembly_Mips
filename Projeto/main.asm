@@ -1,18 +1,16 @@
 .data
-	buffer: .space 32    # buffer para armazenar a string de entrada	
+	buffer: .space 128    # buffer para armazenar a string de entrada	
 	mensagem_invalido: .asciiz "Comando inválido"
 	
 	msg_sonho: .asciiz "Funciona!!"
 	
 	cmd_buffer: .space 32	
-	name_buffer: .space 64
-	cpf_buffer: .space 20
-	id_buffer: .space 20	
+	option_1: .space 32
+	option_2: .space 32
+	option_3: .space 32	
 	
 	data_buffer: .space 128
-	name_data: .space 64
-	cpf_data: .space 20
-	id_data: .space 20
+
 		
 	cmd1: .asciiz "conta_cadastrar"
 	cmd2: .asciiz "conta_format"
@@ -49,27 +47,35 @@
 .main:	
 	#jal GetClientData
 	main_loop:	
-		#jal PrintFormattedData		
-	
-		#j end_program
-		# 1. Leitura da String de Entrada
-		li $v0, 8            # código da syscall para ler string
-		la $a0, buffer       # endereço do buffer
-		li $a1, 128          # comprimento máximo da string
-		syscall
-	
-		la $a0, buffer ## provavelmente NESTE(NESTE!!!) caso nem precise, pois $a0 ja aponta para buffer, mas assim fica mais fácil de entender
-		la $a1, cmd_buffer
+		
 		jal GetComand
-	
-		la $a0, cmd_buffer
-		jal SelectOptions
-
-		j command_not_found#só entra aqui se nenhuma opção for selecionada
+		jal GetOptionData
+		
+		li $v0, 4
+		la $a0, option_1
+		syscall
+		
+		li $v0, 4
+		la $a0, newline
+		syscall
+		
+		li $v0, 4
+		la $a0, option_2
+		syscall
+		
+		li $v0, 4
+		la $a0, newline
+		syscall
+		
+		li $v0, 4
+		la $a0, option_3
+		syscall
+		
+		j end_program
 	
 #opções
 	conta_cadastrar:
-		jal Cadastro
+		#jal Cadastro
 		j update_loop
 				
 	conta_format:
@@ -163,9 +169,12 @@ end_program:
     
 .include "string/strcmp.asm"
 .include "string/strcat.asm"
+
 .include "functions/GetComand.asm"
+.include "functions/GetOptionData.asm"
+
 .include "functions/SelectOptions.asm"
-.include "functions/Cadastro.asm"
+#.include "functions/Cadastro.asm"
 .include "functions/Info.asm"
 .include "functions/Formatar.asm"
 .include "io-data/GetClientData.asm"
@@ -178,40 +187,11 @@ end_program:
 update_loop:
 	# Limpar o buffers
 	la $a0, buffer
-	li $a1, 32	
+	li $a1, 128	
 	jal ClearBuffer
 	
 	la $a0, cmd_buffer
 	li $a1, 32	
-	jal ClearBuffer
-	
-	la $a0, name_buffer
-	li $a1, 64	
-	jal ClearBuffer
-	
-	la $a0, cpf_buffer
-	li $a1, 20	
-	jal ClearBuffer
-	
-	
-	la $a0, id_buffer
-	li $a1, 20	
-	jal ClearBuffer
-	
-	la $a0, data_buffer
-	li $a1, 128	
-	jal ClearBuffer
-	
-	la $a0, name_data
-	li $a1, 64	
-	jal ClearBuffer
-	
-	la $a0, cpf_data
-	li $a1, 20	
-	jal ClearBuffer
-	
-	la $a0, id_data
-	li $a1, 20	
 	jal ClearBuffer
 j main_loop 
 	
