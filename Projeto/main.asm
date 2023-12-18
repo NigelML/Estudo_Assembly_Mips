@@ -31,9 +31,9 @@
 	cmd16: .asciiz "sair"
 	cmd17: .asciiz "info"
 	
-	limite_credito_inicial: .asciiz "(1500)"
-	saldo_inicial: .asciiz "(0000)"
-	fatura_inicial: .asciiz "(0000)"
+	limite_credito_inicial: .asciiz "1500)"
+	saldo_inicial: .asciiz "0000)"
+	fatura_inicial: .asciiz "0000)"
 	
 	newline: .asciiz  "\n"
 	ponto_virgula: .asciiz ";"
@@ -46,7 +46,7 @@
 .text
 
 .main:	
-	#jal GetClientData
+	jal GetClientData
 	main_loop:	
 		
 		jal GetComand
@@ -57,9 +57,7 @@
 	
 #opções
 	conta_cadastrar:
-		li $v0, 4
-		la $a0, msg_sonho
-		syscall
+		jal Cadastro
 		j update_loop
 				
 	conta_format:
@@ -152,6 +150,26 @@ update_loop:
 	la $a0, cmd_buffer
 	li $a1, 32	
 	jal ClearBuffer
+	
+	la $a0, option_1
+	li $a1, 32	
+	jal ClearBuffer
+	
+	la $a0, option_2
+	li $a1, 32	
+	jal ClearBuffer
+	
+	la $a0, option_3
+	li $a1, 32	
+	jal ClearBuffer
+	
+	la $a0, data_buffer
+	li $a1, 128	
+	jal ClearBuffer
+	
+	la $a0, salve_data_buffer
+	li $a1, 128	
+	jal ClearBuffer
 j main_loop
  		      		
 end_program:
@@ -166,7 +184,7 @@ end_program:
 .include "functions/GetOptionData.asm"
 
 .include "functions/SelectOptions.asm"
-#.include "functions/Cadastro.asm"
+.include "functions/Cadastro.asm"
 .include "functions/Info.asm"
 .include "functions/Formatar.asm"
 .include "io-data/GetClientData.asm"
