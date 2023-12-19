@@ -227,7 +227,7 @@ end_program:
 #
 #Funçoes essenciais para o funcionamento das demais 
 #
-.include "tools/PrintFormattedData.asm"
+
 .include "tools/CountCharacters.asm"
 .include "tools/ClearClientData.asm"
 .include "tools/ClearBuffer.asm"
