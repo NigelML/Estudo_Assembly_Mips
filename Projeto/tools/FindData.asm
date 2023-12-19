@@ -5,9 +5,7 @@ result_buffer: .space 32  # Buffer para armazenar os resultados
 .globl FindData
 FindData:
 subi $sp, $sp, -4# necessário , pois quando uma função chama outra o registrador $ra é sobrescrito e perde o retorno original
-sw $ra, 0($sp) #-4 é apenas uma convenção
-
-			
+sw $ra, 0($sp) #-4 é apenas uma convenção			
 		
 	move $s0, $a0 #armazena o dado para comparação
 	la $s1, clientData #armazena o banco de dados para percorrer		 	
