@@ -5,6 +5,8 @@
 	msg_sonho: .asciiz "Funciona!!"
 	cpf_ja_cadastrado: .asciiz "CPF já cadastrado\n"
 	id_ja_cadastrado: .asciiz "ID já cadastrado\n"
+	banco_nome: .asciiz "ClientData-shell>> "
+	
 	
 	cmd_buffer: .space 32	
 	option_1: .space 32
@@ -14,7 +16,6 @@
 	data_buffer: .space 128
 	salve_data_buffer: .space 128
 
-		
 	cmd1: .asciiz "conta_cadastrar"
 	cmd2: .asciiz "conta_format"
 	cmd3: .asciiz "debito_extrato"
@@ -65,70 +66,71 @@
 		beqz $v0, cpf_repetido	
 					
 		jal Cadastro
-		j update_loop
+		la $a1 cmd1
+		j display_comandos
 				
 	conta_format:
 		
-		j update_loop
+		j display_comandos
 		
 	debito_extrato:
 		
-		j update_loop
+		j display_comandos
 		
         credito_extrato:
         	
-        	j update_loop
+        	j display_comandos
         
         transferir_debito:
         	
-        	j update_loop
+        	j display_comandos
         
         transferir_credito:
        		
-        	j update_loop
+        	j display_comandos
         
         pagar_fatura:
         	
-        	j update_loop
+        	j display_comandos
         
         sacar:
         	
-        	j update_loop
+        	j display_comandos
         
         depositar:
         	
-        	j update_loop
+        	j display_comandos
         
         alterar_limite:
         	
-        	j update_loop
+        	j display_comandos
         
         conta_fechar:
         	
-       		j update_loop
+       		j display_comandos
         
         data_hora:
         	
-        	j update_loop
+        	j display_comandos
         
         salvar: #feito 
         	jal CountCharacters # conta o numero de caracteres em clientData
         	beqz  $v0 formatar_salvar # se clientData = 0 significa que foi usado o comando formatar
         	jal SetClientData
-        	j update_loop
+        	j display_comandos
         
-        recarregar: #"feito" ainda precisa de mais testes
+        recarregar: #"feito" reseta clientData e recarrega os dados
         	jal ClearClientData
         	jal GetClientData        	
-        	j update_loop
+        	j display_comandos
         
         formatar: #feito    	
         	jal ClearClientData #apaga os dados do buffer clienteData, mas não muda o arquivo txt  	
-        	j update_loop
+        	j display_comandos
         	
        info:  #feito
        		jal Info
-       		j update_loop 
+       		j display_comandos
        		 
        sair: #feito
         	j end_program   	
@@ -150,6 +152,7 @@ j main_loop
  
 update_loop: #update limpa todos os buffers principais para evitar problema quando iniciar o loop
 	# Limpar o buffers
+
 	la $a0, buffer
 	li $a1, 128	
 	jal ClearBuffer
@@ -179,19 +182,30 @@ update_loop: #update limpa todos os buffers principais para evitar problema quan
 	jal ClearBuffer
 j main_loop
 
-
 cpf_repetido: #aviso caso cpf ou id sejam repetidos durante o cadastro
 	li $v0, 4
+	la $a0, banco_nome
+	syscall	
 	la $a0, cpf_ja_cadastrado
 	syscall
 	j update_loop
 id_repetido:
 	li $v0, 4
+	la $a0, banco_nome
+	syscall
 	la $a0, id_ja_cadastrado
 	syscall
 	j update_loop	 
 	
-	     		     		
+display_comandos:
+	li $v0, 4
+	la $a0, banco_nome
+	syscall
+	la $a0, buffer
+	syscall
+	j update_loop	 
+	
+	     		
 end_program:
     # Finaliza o programa
     li $v0, 10
