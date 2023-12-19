@@ -18,7 +18,7 @@ sw $ra, 0($sp) #-4 é apenas uma convenção
 		
 	jal CalculaDigitoID
 	
-	# a partir daqui concatena todas as partes para no fim salvar em clientData
+	# a partir daqui concatena todas as partes, que estão separadas(opcao_1,2,3), para no fim salvar em clientData
 	la $a0, salve_data_buffer
 	la $a1, option_1
 	jal strcat
